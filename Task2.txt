@@ -1,0 +1,112 @@
+USE DATABASE Ba_DEMODATABASE;
+
+drop table if exists Ba_phones;
+create table Ba_phones(
+name varchar(20) not null unique,
+phone_number integer not null unique
+);
+
+create table Ba_calls(
+id integer not null,
+caller integer not null,
+callee integer not null,
+duration integer not null,
+unique(id)
+);
+
+insert into Ba_phones values('Jack', 1234),
+('Lena', 3333),
+('Mark', 9999),
+('Anna', 7582);
+
+insert into Ba_calls values(25,1234,7582,8),
+(7,9999,7582,1),
+(18,9999,3333,4),
+(2,7582,3333,3),
+(3,3333,1234,1),
+(21,3333,1234,1);
+
+
+
+select * from Ba_calls;
+
+   
+   -- 1 Given
+   
+   select name from
+   (select x.name,sum(callerduration+calleeduration) as totalduration from
+   (Select A.name,b.caller,sum(duration) as callerduration
+    FROM
+   Ba_phones A 
+   JOIN Ba_calls B ON a.phone_number = b.caller
+    Where A.phone_number = B.caller
+   group by a.name,b.caller) x 
+    
+  join
+    
+    (Select A.name,b.callee,sum(duration) as calleeduration
+    from
+    Ba_phones A 
+   JOIN Ba_calls B ON a.phone_number = b.callee
+    Where A.phone_number = B.callee
+   group by a.name,b.callee) y
+   on x.caller = y.callee
+   group by x.name,x.caller,y.callee
+   having totalduration >=10
+   order by x.name);
+   
+      
+     
+     
+   
+   
+   
+   -- 2 Given:
+
+drop table if exists Ba_phonesnew;
+create table Ba_phonesnew(
+name varchar(20) not null unique,
+phone_number integer not null unique
+);
+
+create table Ba_callsnew(
+id integer not null,
+caller integer not null,
+callee integer not null,
+duration integer not null,
+unique(id)
+);
+
+insert into Ba_phonesnew values('John', 6356),
+('Addison', 4315),
+('Kate', 8003),
+('Ginny', 9831);
+
+insert into Ba_callsnew values(65,8003,9831,7),
+(100,9831,8003,3),
+(145,4315,9831,18);
+   
+   select distinct(name) from
+   (select x.name,sum(callerduration+calleeduration) as totalduration from
+   (Select A.name,b.caller,sum(duration) as callerduration
+    FROM
+   Ba_phonesnew A 
+   JOIN Ba_callsnew B ON a.phone_number = b.caller
+    Where A.phone_number = B.caller
+   group by a.name,b.caller) x 
+    
+    join
+    
+    (Select A.name,b.callee,sum(duration) as calleeduration
+    from
+    Ba_phonesnew A 
+   JOIN Ba_callsnew B ON a.phone_number = b.callee
+    Where A.phone_number = B.callee
+   group by a.name,b.callee) y
+   group by x.name,x.caller,y.callee
+   having totalduration >=10
+   order by x.name);
+   
+   
+
+

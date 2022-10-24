@@ -1,0 +1,73 @@
+USE DATABASE Ba_DEMODATABASE;
+
+create table Ba_banktransactions(
+amount integer not null,
+ date date not null);
+ 
+ insert into Ba_banktransactions values 
+ (1000, '2020-01-06'),
+ (-10,'2020-01-14'),
+ (-75,'2020-01-20'),
+ (-5,'2020-01-25'),
+ (-4,'2020-01-29'),
+ (2000,'2020-03-10'),
+ (-75,'2020-03-12'),
+ (-20,'2020-03-15'),
+ (40,'2020-03-15'),
+ (-50,'2020-03-17'),
+ (200,'2020-10-10'),
+ (-200,'2020-10-10');
+ 
+ select * from Ba_banktransactions; 
+ 
+ select sum(amount)-55 as balance from Ba_banktransactions;
+ 
+  
+ 
+ 
+ select sum(Total1+Total2)-(11*5) as Balance from
+ (select EXTRACT(MONTH FROM DATE) AS MTH, count(1) as Totaltranscationmonth, sum(amount) as Total1 from Ba_banktransactions
+ where amount > 0 
+ group by MTH ) X  
+ join
+ (select *,
+  case when Totaltranscationmonth<3  and Total2<0 then 'Charged'
+  when Totaltranscationmonth>=3  and Total2<=-100 then 'No Charge'
+  else
+  'Charged'
+  end as Cardcharge from
+ (select EXTRACT(MONTH FROM DATE) AS MTH, count(1) as Totaltranscationmonth, sum(amount) as Total2 from Ba_banktransactions
+ where amount < 0 
+ group by MTH) a)  Y 
+ on X.MTH = Y.MTH;
+ 
+ -- Given 2
+ 
+ 
+ create table Ba_banktransactions2(
+amount integer not null,
+ date date not null);
+ 
+ insert into Ba_banktransactions2 values 
+ (1, '2020-06-29'),
+ (35,'2020-02-20'),
+ (-50,'2020-02-03'),
+ (-1,'2020-02-26'),
+ (-200,'2020-08-01'),
+ (-44,'2020-02-07'),
+ (-5,'2020-02-25'),
+ (1,'2020-06-29'),
+ (1,'2020-06-29'),
+ (-100,'2020-12-29'),
+ (-100,'2020-12-30'),
+ (-100,'2020-12-31');
+ 
+ select * from Ba_banktransactions2;
+ 
+ drop table Ba_banktransactions2;
+ 
+
+
+ 
+ 
+ 

@@ -1,0 +1,37 @@
+USE DATABASE Ba_DEMODATABASE;
+
+create table shoping_history(
+product varchar not null,
+quantity integer not null,
+unit_price integer not null  
+);
+
+insert into shoping_history values('milk',3,10),
+('bread',7,3),
+('bread',5,2),
+('milk',2,20),
+('rice',5,10),
+('rice',7,20),
+('oil',3,25),
+('oil',7,28),
+('salt',2,15),
+('salt',5,22);
+
+drop table shoping_history;
+
+select * from shoping_history;
+
+select product, sum(total) as total_price   from
+(select product, quantity, unit_price, sum(quantity*unit_price) as total  from shoping_history
+group by product,quantity,unit_price
+order by total desc) a
+group by product
+order by product desc;
+
+-- Same problem statement Done in Window function
+select distinct(product), sum(total) as total_price from
+(select *,
+sum(quantity*unit_price) over(partition by product,quantity,unit_price) total
+from shoping_history) a
+group by product
+order by product desc;
